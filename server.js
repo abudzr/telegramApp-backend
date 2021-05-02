@@ -26,43 +26,53 @@ const io = socket(httpServer, {
   }
 })
 
-
-// socket io
+const messageModel = require("./app/models/messagesModel")
 
 // / socket io
 io.on("connection", (socket) => {
+  // console.log(socket);
   console.log("client terhubung dengan id " + socket.id);
-
   socket.on("initialUser", (idFrom) => {
-    socket.join(`user:${idFrom}`)
     console.log(`user:${idFrom}`);
+    socket.join(`user:${idFrom}`)
   })
 
-  socket.on('sendMessage', (data, callback) => {
+  socket.on('sendMessage', async (data, callback) => {
     // console.log(data);
-    // messageModels.insetMessage(data)
     const date = new Date()
+    const dayNow = moment(date).format('dddd');
     const timeNow = moment(date).format('LT')
-    const dataMessage = { ...data, time: timeNow }
-    console.log(dataMessage);
-    io.to(`user:${data.idTo}`).emit('receiverMessage', dataMessage)
-    callback(dataMessage)
+    const dateNow = moment(date).format('LL');
+    const dataMessage = { ...data, time: timeNow, day: dayNow, date: dateNow }
+    // console.log(dataMessage);
+    const send = {
+      idFrom: dataMessage.idFrom,
+      idTo: dataMessage.idTo,
+      chat: dataMessage.chat,
+      type: "send",
+      time: `${dataMessage.day}. ${dataMessage.time}`,
+      date: dateNow,
+    };
+    const receiver = {
+      idFrom: dataMessage.idTo,
+      idTo: dataMessage.idFrom,
+      chat: dataMessage.chat,
+      type: "receive",
+      time: `${dataMessage.day}. ${dataMessage.time}`,
+      date: dateNow,
+    };
+    await messageModel.createMessages(send);
+    await messageModel.createMessages(receiver);
+    const getMessagesIdFrom = await messageModel.getMessageByIdSender(data.idFrom);
+    const getMessagesIdTo = await messageModel.getMessageByIdSender(data.idTo);
+    const result = [...getMessagesIdFrom, ...getMessagesIdTo];
+    // const result = getMessagesIdFrom;
+    io.to(`user:${data.idTo}`).emit('receiverMessage', result)
+    console.log(result);
+    callback(result)
+    // io.to(`user:${data.idTo}`).emit('receiverMessage', dataMessage)
+    // callback(dataMessage)
   })
-
-
-  // socket.on('sendMessage', async (data, callback) => {
-  //   const date = new Date()
-  //   const timeNow = moment(date).format('LT')
-  //   const dateNow = moment().format('LL')
-  //   const dataMessage = { ...data, createdAt: timeNow, date: dateNow }
-  //   io.to(`user:${data.idTo}`).emit('receiverMessage', dataMessage)
-  //   console.log('isi data', data);
-  //   callback(dataMessage)
-  //   console.log(dataMessage, 'isi data message');
-  //   // dataMessage.id = uuidv4()
-
-  //   // await messageModels.createMessages(dataMessage);
-  // })
 
   socket.on("disconnect", reason => {
     console.log("client disconnect " + reason);

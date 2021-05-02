@@ -2,9 +2,10 @@ const express = require("express");
 const route = express.Router();
 
 const usersRouter = require("./usersRouter");
-// const transactionRouter = require("./transactionRouter");
+const messageRouter = require("./messageRouter");
 
 route.use("/users", usersRouter);
+route.use("/messages", messageRouter)
 // route.use("/transaction", transactionRouter);
 
 module.exports = route;

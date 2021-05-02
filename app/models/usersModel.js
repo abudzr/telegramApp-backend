@@ -13,7 +13,7 @@ exports.getAllUsers = (queryPage, queryPerPage, keyword, sortBy, order, id) => {
         } else {
           totalData = result[0].totalData;
           page = queryPage ? parseInt(queryPage) : 1;
-          perPage = queryPerPage ? parseInt(queryPerPage) : 5;
+          perPage = queryPerPage ? parseInt(queryPerPage) : 10;
           totalPage = Math.ceil(totalData / perPage);
         }
         const firstData = perPage * page - perPage;
