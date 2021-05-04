@@ -68,7 +68,6 @@ io.on("connection", (socket) => {
     const result = [...getMessagesIdFrom, ...getMessagesIdTo];
     // const result = getMessagesIdFrom;
     io.to(`user:${data.idTo}`).emit('receiverMessage', result)
-    console.log(result);
     callback(result)
     // io.to(`user:${data.idTo}`).emit('receiverMessage', dataMessage)
     // callback(dataMessage)
