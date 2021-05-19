@@ -69,6 +69,7 @@ io.on("connection", (socket) => {
     // const result = getMessagesIdFrom;
     io.to(`user:${data.idTo}`).emit('receiverMessage', result)
     callback(result)
+    socket.to(`user:${data.idTo}`).emit('notif', result[result.length - 1])
     // io.to(`user:${data.idTo}`).emit('receiverMessage', dataMessage)
     // callback(dataMessage)
   })
