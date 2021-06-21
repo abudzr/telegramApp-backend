@@ -8,9 +8,9 @@ const mail = require("../helpers/sendEmail");
 const hash = require("../helpers/hashPassword");
 const validation = require("../helpers/validation");
 const secretKey = process.env.SECRET_KEY;
-const host = process.env.HOST;
-const port = process.env.PORT_FRONTEND;
-const link = `http://${host}:${port}`;
+// const host = process.env.HOST;
+// const port = process.env.PORT_FRONTEND;
+const link = process.env.URL_REACT;
 
 
 
